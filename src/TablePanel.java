@@ -1,6 +1,5 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,21 +30,42 @@ public class TablePanel extends JPanel {
 
         add(scrollPane); // Add the scroll pane to the frame
 
+        // Listener for row selection changes
         table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent event) {
                 if (!event.getValueIsAdjusting()) {
-                    int selectedRow = table.getSelectedRow();
-                    int selectedColumn = table.getSelectedColumn();
-                    if (selectedRow >= 0) {
-                        Object[] rowData = new Object[table.getColumnCount()];
-                        for (int i = 0; i < table.getColumnCount(); i++) {
-                            rowData[i] = table.getValueAt(selectedRow, i);
-                        }
-                        detailsPanel.updateDetails(rowData, selectedColumn);
-                    }
+                    // Handle row change
+                    handleSelectionChange();
                 }
             }
         });
+
+// Listener for column selection changes
+        table.getColumnModel().addColumnModelListener(new TableColumnModelListener() {
+            @Override public void columnAdded(TableColumnModelEvent e) {}
+            @Override public void columnRemoved(TableColumnModelEvent e) {}
+            @Override public void columnMoved(TableColumnModelEvent e) {}
+            @Override public void columnMarginChanged(ChangeEvent e) {}
+            @Override
+            public void columnSelectionChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    // Handle column change
+                    handleSelectionChange();
+                }
+            }
+        });
+    }
+
+    private void handleSelectionChange() {
+        int selectedRow = table.getSelectedRow();
+        int selectedColumn = table.getSelectedColumn();
+        if (selectedRow >= 0) {
+            Object[] rowData = new Object[table.getColumnCount()];
+            for (int i = 0; i < table.getColumnCount(); i++) {
+                rowData[i] = table.getValueAt(selectedRow, i);
+            }
+            detailsPanel.updateDetails(rowData, selectedColumn);
+        }
     }
 }

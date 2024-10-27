@@ -21,6 +21,8 @@ public class DetailsPanel extends JPanel {
     // Method to update details based on selected row data
     public void updateDetails(Object[] rowData, int selectedColumn) {
         // Clear previous labels from the panel
+        Color darkRed = new Color(124, 0, 0);
+
         removeAll();
         detailLabels.clear();
         data = new Data();
@@ -31,18 +33,24 @@ public class DetailsPanel extends JPanel {
             // Create and add the label for each piece of data
             JLabel label = new JLabel( columnName[i] + ": ");
             label.setFont(new Font("Arial", Font.BOLD, 12));
+            if (i == 0) {
+                label.setForeground(darkRed);
+                label.setFont(new Font("Arial", 3, 20));
+            }
             if (i == selectedColumn) {
                 label.setOpaque(true); // Make the background visible
                 label.setBackground(Color.YELLOW); // Set the background color to yellow
-                label.setForeground(Color.BLACK); // Set text color to black
             }
 
             JLabel valueLabel = new JLabel(String.valueOf(rowData[i]));
             valueLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+            if (i == 0) {
+                valueLabel.setForeground(darkRed);
+                valueLabel.setFont(new Font("Arial", 1, 20));
+            }
             if (i == selectedColumn) {
                 valueLabel.setOpaque(true); // Make the background visible
                 valueLabel.setBackground(Color.YELLOW); // Set the background color to yellow
-                valueLabel.setForeground(Color.BLACK); // Set text color to black
             }
             detailLabels.add(label);
             detailLabels.add(valueLabel);
