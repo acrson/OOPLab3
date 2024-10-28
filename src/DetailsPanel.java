@@ -12,45 +12,52 @@ public class DetailsPanel extends JPanel {
         this.setBackground(Color.LIGHT_GRAY);
         this.setLayout(new FlowLayout());
 
-        setLayout(new GridLayout(0, 4, 2, 2)); // Rows, Columns, Horizontal Gap, Vertical Gap
-
-
         detailLabels = new ArrayList<>();
+
+        JLabel defaultPanel = new JLabel("Details - No Cell Selected");
+        defaultPanel.setFont(new Font("Arial", Font.BOLD, 20));
+        add(defaultPanel);
     }
 
     // Method to update details based on selected row data
     public void updateDetails(Object[] rowData, int selectedColumn) {
         // Clear previous labels from the panel
-        Color darkRed = new Color(124, 0, 0);
-
         removeAll();
         detailLabels.clear();
+
+        setLayout(new GridLayout(0, 4, 2, 2)); // Rows, Columns, Horizontal Gap, Vertical Gap
+
         data = new Data();
         String[] columnName = data.getColumnNames(data);
+        Color darkRed = new Color(124, 0, 0);
 
         // Loop through each item in the row data
         for (int i = 0; i < rowData.length; i++) {
             // Create and add the label for each piece of data
             JLabel label = new JLabel( columnName[i] + ": ");
             label.setFont(new Font("Arial", Font.BOLD, 12));
+            // Makes the year information appear dark red
             if (i == 0) {
                 label.setForeground(darkRed);
                 label.setFont(new Font("Arial", 3, 20));
             }
+            // Highlight the selected row!!
             if (i == selectedColumn) {
-                label.setOpaque(true); // Make the background visible
-                label.setBackground(Color.YELLOW); // Set the background color to yellow
+                label.setOpaque(true);
+                label.setBackground(Color.YELLOW);
             }
 
             JLabel valueLabel = new JLabel(String.valueOf(rowData[i]));
             valueLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+            // Makes the year information appear dark red
             if (i == 0) {
                 valueLabel.setForeground(darkRed);
                 valueLabel.setFont(new Font("Arial", 1, 20));
             }
+            // Highlight the selected row!!!
             if (i == selectedColumn) {
-                valueLabel.setOpaque(true); // Make the background visible
-                valueLabel.setBackground(Color.YELLOW); // Set the background color to yellow
+                valueLabel.setOpaque(true);
+                valueLabel.setBackground(Color.YELLOW);
             }
             detailLabels.add(label);
             detailLabels.add(valueLabel);

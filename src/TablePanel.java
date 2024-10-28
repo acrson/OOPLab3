@@ -1,30 +1,35 @@
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
 
 public class TablePanel extends JPanel {
     Data data; // Creates a data object from the data class
     // Creates a JTable
     JTable table;
     DetailsPanel detailsPanel;
+    StatsPanel statsPanel;
+    TableRowSorter<TableModel> sorter;
 
-    public TablePanel(DetailsPanel detailsPanel) {
-        this.setPreferredSize(new Dimension(800, 280));
+    public TablePanel(DetailsPanel detailsPanel, StatsPanel statsPanel) {
+        this.setPreferredSize(new Dimension(1100, 280));
         this.setBackground(Color.BLUE);
         this.detailsPanel = detailsPanel;
+        this.statsPanel = statsPanel;
 
         Data data = new Data();
 
         table = new JTable(data.getData(data), data.getColumnNames(data));
 
-        // Disable automatic column resizing to allow horizontal scrolling
+        // Disables automatic column resizing to allow horizontal scrolling
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
+        sorter = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(sorter);
+
         JScrollPane scrollPane = new JScrollPane(table); // Add the table to the scroll pane
-        scrollPane.setPreferredSize(new Dimension(800, 270)); // Set a preferred size for the scroll pane
+        scrollPane.setPreferredSize(new Dimension(1100, 270)); // Set a preferred size for the scroll pane
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         table.setFillsViewportHeight(true);
 
@@ -35,13 +40,12 @@ public class TablePanel extends JPanel {
             @Override
             public void valueChanged(ListSelectionEvent event) {
                 if (!event.getValueIsAdjusting()) {
-                    // Handle row change
                     handleSelectionChange();
                 }
             }
         });
 
-// Listener for column selection changes
+        // Listener for column selection changes
         table.getColumnModel().addColumnModelListener(new TableColumnModelListener() {
             @Override public void columnAdded(TableColumnModelEvent e) {}
             @Override public void columnRemoved(TableColumnModelEvent e) {}
@@ -57,6 +61,10 @@ public class TablePanel extends JPanel {
         });
     }
 
+    public void setFilter(RowFilter<Object, Object> filter) {
+        sorter.setRowFilter(filter);
+    }
+
     private void handleSelectionChange() {
         int selectedRow = table.getSelectedRow();
         int selectedColumn = table.getSelectedColumn();
@@ -66,6 +74,7 @@ public class TablePanel extends JPanel {
                 rowData[i] = table.getValueAt(selectedRow, i);
             }
             detailsPanel.updateDetails(rowData, selectedColumn);
+            statsPanel.updateDetails(rowData, selectedColumn);
         }
     }
 }
